@@ -1,0 +1,213 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{parskip} % für Absätze
+\usepackage[utf8]{inputenc} 
+\usepackage[ngerman]{babel} 
+\usepackage[T1]{fontenc}   
+\usepackage{url} % benötigt für URL in Literaturverzeichnis
+\usepackage[ngerman]{babel}
+
+
+\usepackage[backend=biber,style=numeric]{biblatex}
+\addbibresource{literatur.bib}
+
+
+\title{Abgabe 1 für Computergestütze Methoden}
+\author{Gruppe 60, Hanna Flachmann und Mia Voßhans }
+\date{02.12.2024}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\newpage
+\listoffigures
+
+\newpage
+\section{Der zentrale Grenzwertsatz}
+Der zentrale Grenzwertsatz (ZGS) ist ein fundamentales Resultat der Wahrscheinlichkeitstheorie, das die Verteilung von Summen unabhängiger, identisch verteilter $(i.i.d)$ Zufallsvariablen (ZV) beschreibt. Er besagt, dass unter bestimmten Voraussetzungen die Summe einer großen Anzahl solcher ZV annähernd normalverteilt ist, unabhängig von der Verteilung der einzelnen ZV. Dies ist besonders nützlich, da die Normalverteilung gut untersucht und mathematisch handhabbar ist. 
+
+\subsection{Aussage}
+Sei $X_1,X_2,...,X_n$ eine Folge von $i.i.d$ ZV mit dem Erwartungswert $\mu=\mathbb{E}(X_i)$ und der Varianz $\sigma^2=Var(X_i)$, wobei $0<\sigma^2<\infty$ gelte. Dann konvergiert die standardisierte Summe $Z_n$ dieser ZV für $n\to\infty$ in Verteilung gegen eine Standardnormalverteilung:\footnote{Der zentrale Grenzwertsatz hat verschiedene Verallgemeinerungen. Eine davon ist der \textbf{Lindeberg-Feller-Grenzwertsatz} [\cite{1}, Seite 328], der schwächere Bedingungen an die Unabhängigkeit und die identische Verteilung der ZV stellt.} 
+
+
+
+\begin{equation}
+\label{Konvergenz der Folge}
+Z_n=\frac{\sum_{i=1}^{n}X_i-n\mu}{\sigma\sqrt{n}}\stackrel{d}{\rightarrow}\mathcal{N}(0,1).
+\end{equation}
+
+Das bedeutet, dass für große $n$ die Summe der ZV näherungsweise normalverteilt ist mit dem Erwartungswert $n\mu$ und der Varianz $n\sigma^2$:
+
+\begin{equation}
+\label{näherungsweise normalverteilt}
+\sum_{i=1}^{n} X_i\sim\mathcal{N}(n\mu,n\sigma^2).
+\end{equation}
+
+\subsection{Erklärung der Standardisierung}
+Um die Summe der ZV in eine Standardnormalverteilung zu transformieren, subtrahiert man den Erwartungswert $n\mu$ und teilt durch die Standardabweichung $\sigma\sqrt{n}$. Dies führt zu der obigen Formel \eqref{Konvergenz der Folge}. Die Darstellung \eqref{näherungsweise normalverteilt} ist für $n\to\infty$ nicht wohldefiniert.
+
+\subsection{Anwendungen}
+Der ZGS wird in vielen Bereichen der Statistik und der Wahrscheinlichkeitstheorie angewendet. Typische Beispiele sind:
+\begin{itemize}
+\item Berechnung von Konfidenzintervallen für Stichprobenmittelwerte \cite{Anwendungsbeispiel}
+\item Durchführung von Hypothesentests \cite{Anwendungsbeispiel}
+\end{itemize}
+
+
+\newpage
+\section{Bearbeitung zur Aufgabe 1}
+\subsection{Thema Datenverarbeitung}
+\subsubsection{Aufbau des Datensatzes}
+Der vorliegende Datensatz bezieht sich auf einen Fahrradverleih. Es werden Informationen zu den einzelnen Stationen des Verleihes aufgeführt, die sich auf den Tag, die Wetterlage und die Anzahl an ausgeliehenen Fahrrädern beziehen. Die Daten decken den Zeitraum vom 01.01.2023 bis zum 31.12.2023 ab. Da die ursprüngliche Datenstruktur nicht effizient zu bearbeiten war, haben wir die CSV-Datei in Excel importiert und zunächst eine Tabelle erstellt\eqref{Exceltabelle unsortiert}.
+\begin{figure}[ht] 
+    \centering
+    \includegraphics[width = \textwidth]{exceltabelle gekürzt.png}
+    \caption{originaler Datensatz in einer Tabellenkalkulation}
+    \label{Exceltabelle unsortiert}
+\end{figure}
+\begin{figure}[ht] 
+    \centering
+    \includegraphics[width = \textwidth]{Tabellenkalkulation ganze übersicht fahrradverleih.png}
+    \caption{Tabellenkalkulation}
+    \label{Tabellenkalkulation}
+\end{figure}
+Die Abbildung \eqref{Tabellenkalkulation} gibt nur noch Auskunft über die, für unsere Gruppe relevanten Daten über die \textit{Fulton St and Clermont Ave}. Der Datensatz enthält die folgenden Attribute: \textit{station, date, day of year, day of week, month of year, precipitation, windspeed, min temperature, average temperature, max temperature, count}.\footnote{Deutsche Übersetzung: Station, Datum, Tag im Jahr, Tag in der Woche, Monat im Jahr, Niederschlag, Windgeschwindigkeit, minimale Temperatur, Durchschnittstemperatur, maximale Temperatur, Anzahl der ausgeliehenen Fahrräder}
+Es fällt auf, dass die Zahl der ausgeliehenen Fahrräder bei höheren Temperaturen, insbesondere auch in Kombination mit geringem Niederschlag, deutlich höher ist, als bei niedrigeren Temperaturen. Darüber hinaus gibt es fehlende Werte in den Spalten: G, H, I, J, K, L in \eqref{Tabellenkalkulation}.
+
+\newpage
+\subsubsection{Berechnung der höchsten mittleren Temperatur}
+Aufgrund der Menge der Daten haben wir eine Pivot-Tabelle \eqref{Pivot-Tabelle} ertsellt, weil sie große Datenmengegn effizient zusammenfassen und analysieren kann. Dadurch ist eine klare Organisation und Filterung von und nach Daten deutlich leichter.
+
+\begin{figure}[ht] 
+    \centering
+    \includegraphics[width = \textwidth]{Pivottabelle_Abgabe_Durchschnittstemp..png}
+    \caption{Pivot-Tabelle des Datensatzes}
+    \label{Pivot-Tabelle}
+\end{figure}
+Um die höchste Durchschnittstemperatur zu berechnen betrachtet man in der Pivot-Tabelle\eqref{Pivot-Tabelle} die Spalte \textit{Max. von average temperature} in der die Höchsttemperatur jedes Monats angezeigt wird. Unten in der blauen Spalte \textit{Gesamtergebnis} im entsprechenden Feld findet man 83°F, welche die gesucht höchste Durchschnittstemperatur der \textit{Fulton Stree and Clermont Ave} ist. Um diese in Grad Celsius umzurechnen haben wir die Formel \textit{=UMWANDELN(C30;"F";"C")} verwendet. Die höchste mittlere Temperatur beträgt somit \textbf{28,3°C}. 
+
+\subsection{Thema Datenhaltung}
+SQLite verwendet ein flexibles Typensystem, das bedeutet, dass der Datentyp einer Spalte nicht strikt durch die Definition der Tabelle festgelegt wird: es gibt jedoch eindeutige grundlegende Datentypen, die häufig verwendet werden \textit{(INTEGER, REAL, TEXT, BLOB, NULL)}
+
+\newpage
+\subsubsection{Datenbankschema entwerfen}
+
+\begin{tabular}{|p{4cm}|p{4cm}|p{4cm}|}                         \hline                                                       \multicolumn{3}{|c|}{Datenbankschema}\\
+   \hline
+   Wetterdaten & Datumsangaben & Fahrradverleih\\
+   \hline
+   \underline{weather id \textbf{\#}} & \underline{date id \textbf{\#}} & \underline{rental id \textbf{\#}}\\
+   precipitation & date & station name\\
+   windspeed & day of year & date id \textbf{\#}\\
+   min temperature & day of week & weather id \#\\
+   average temperature & month of year & count\\
+   max temperature & . & . \\
+   \hline
+\end{tabular}
+
+
+Mit diesem Schema haben wir die Daten in drei seperate Tabellen aufgeteilt:
+
+\begin{itemize}
+\item Wetterdaten: enthält alle relevanten Wetterinformationen
+\item Datum: enthält alle relevanten Informationen über das Datum
+\item Fahrradverleih: verknüpft die Station mit den Wetterdaten und dem Datum und speichert die Anzahl der ausgeliehenen Fahrräder
+\end{itemize}
+$\Rightarrow$ Da der Stationsname bei allen, für unsere Gruppe relevanten, Daten gleich ist, muss dieser nicht in einer seperaten Tabelle gespeichert und mit einer id versehen werden. In unserem Fall reicht es daher aus die Station als einfaches Attribut mit in die Fahrradverleihtabelle aufzunehmen.
+
+\subsubsection{1. und 2. Normalform}
+1.Normalform (1NF)
+\begin{itemize}
+\item jede Tabelle hat einen Primärschlüssel welcher jeweils unterstrichen ist 
+\item alle Attribute sind atomar (keine zusammengesetzten oder wiederholenden Gruppen)
+\end{itemize}
+2.Normalform (2NF)
+\begin{itemize}
+\item alle Nicht-Schlüssel-Attribute sind vollständig abhängig von dem gesamten Primärschlüssel
+\end{itemize}
+
+$\Rightarrow$ Diese obige Aufteilung in das Datenbankenschema erfüllt die erste und zweite Normalform, da sie Redundanz minimiert und sicherstellt, dass alle Nicht-Schlüsselattribute funktional abhängig von den Primärschlüsseln sind. Zudem wurde mit dem Prinzip \textit{ the separation of concerns} prioritized to combining the same information.
+
+\newpage
+\subsection{SQ-Lite}
+Zum erstellen des Code haben wir SQLite Online verwendet.\cite{sqlite}
+\subsubsection{SQL-Statements}
+\begin{figure}[ht] 
+    \centering
+    \includegraphics[width = \textwidth]{Screenshot Tabelle COMET1 korrigiert.png}
+    \caption{Datenbankschema in SQ-Lite}
+    \label{SQL-Statements}
+\end{figure}
+
+\newpage
+\subsubsection{SQL-Daten Import}
+Um den Datensatz in die entsprechenden Tabellen zu importieren haben wir zunächst den Datensatz in drei seperate Tabellenkalkulationen in Excel aufgeteilt.
+\begin{itemize}
+\item Tabelle Wetterdaten mit den Spalten: \textit{precipitation, windspeed, min temperature, average temperature, max temperature}
+\item Tabelle Datum mit den Spalten: \textit{date, day of year, day of week, day of month}
+\item Tabelle Fahrradverleih mit den Spalten: \textit{station, count}
+\end{itemize}
+Diese separaten Datensätze haben wir anschließend als CSV-Dateien (\textit{Comma separated values}) gespeichert um den Import in SQLite zu ermöglichen.
+Um die Daten zu importieren haben wir folgende Befehle genutzt:
+
+\begin{figure}[ht] 
+    \centering
+    \includegraphics[width = \textwidth]{Importbefehle COMET1.png}
+    \caption{Befehle zum importieren von csv Dateien}
+    \label{SQL-Daten Import}
+\end{figure}
+
+\textbf{.mode csv} stellt dabei den Modus auf CSV-Dateien und \textbf{.import ...} importiert die Datei im angegebenene Dateipfad in die am Ende des Befehls aufgeführte Tabelle.
+Um zu überprüfen, ob der Import funktioniert hat lässt sich der Befehl \textbf{select*from ("Tabellenname")} ausführen.
+
+
+\subsubsection{SQL-Abfrage}
+\begin{figure}[ht] 
+    \centering
+    \includegraphics[width = \textwidth]{befehl umrechnung in grad celsius comet 1.png}
+    \caption{Befehl zur Abfrage der höchsten mittleren Temperatur}
+\end{figure}
+\begin{figure}[ht] 
+    \centering
+    \includegraphics[width = 0.9\textwidth]{sql abfrage umrechnung in grad celsius.png}
+    \caption{Ergebnis der Abfrage zur höchsten mittleren Temperatur}
+    \label{Ergebnis Abfrage}
+\end{figure}
+Wie \eqref{Ergebnis Abfrage} zu entnehmen ist die höchste mittlere Temperatur umgewandelt in Celsius \textbf{28.3°C}.
+
+\newpage
+\printbibliography
+
+Link zu GitHub um den LATEX Code in Overleaf einsehen zu können: 
+
+\end{document}
+
+Literaturverzeichnis:
+
+@book{1,
+    title = {Wahscheinlichkeitstheorie},
+    author = {Klenke, Achim},
+    publisher = {Springer},
+    edition = {3.edition},
+    year = {2013}
+}
+
+@online{Anwendungsbeispiel,
+    author = {StudySmarter},
+    title = {StudySmarter},
+    url = {https://www.studysmarter.de/studium/mathematik-studium/statistik-studium/der-zentrale-grenzwertsatz/},
+    urldate = {2024-11-26},
+    year = {2024}
+}
+
+@online{sqlite,
+  author    = {SQLite Consortium },
+  title     = {SQLite: A C Library that Implements a Self-Contained, Serverless, Zero-Configuration, Transactional SQL Database Engine},
+  year      = {2024},
+  url       = {https://www.sqlite.org/},
+  note      = {Accessed: 2024-11-29}
+}
